@@ -1,6 +1,7 @@
 package com.uopen.cryptionkit.core;
 
 
+import com.uopen.cryptionkit.ExtendParamConstant;
 import com.uopen.cryptionkit.UCipher;
 import com.uopen.cryptionkit.ReturnType;
 import com.uopen.cryptionkit.utils.UUtils;
@@ -8,9 +9,11 @@ import org.bouncycastle.util.encoders.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
+import java.util.HashMap;
 
 /**
  * AES加解密
@@ -20,12 +23,63 @@ import java.security.SecureRandom;
  */
 public class AesCipher implements UCipher {
     private ReturnType returnType = ReturnType.TYPE_HEX;
-
+    private HashMap<String,String> extendParams;
+    private static final String defaultMode="ECB";
+    private static final String defaultPadding="PKCS7Padding";
+    private static final String defaultIv="0123456789";
     @Override
     public void setReturnDataType(ReturnType mReturnType) {
         this.returnType = mReturnType;
     }
 
+    @Override
+    public void setExtendParams(HashMap<String, String> extendParams) {
+        this.extendParams=extendParams;
+    }
+
+    /**
+     * get extend input mode
+     * @return
+     */
+    private String getCustomMode(){
+        if(extendParams==null){
+            return defaultMode;
+        }
+        String _mode=extendParams.get(ExtendParamConstant.KeyName.MODE);
+        if(_mode==null||_mode.length()<=0){
+            return defaultMode;
+        }
+        return _mode;
+    }
+    /**
+     * get extend input padding
+     * @return
+     */
+    private String getCustomPadding(){
+        if(extendParams==null){
+            return defaultPadding;
+        }
+        String _padding=extendParams.get(ExtendParamConstant.KeyName.PADDING);
+        if(_padding==null||_padding.length()<=0){
+            return defaultPadding;
+        }
+        return _padding;
+    }
+
+    /**
+     * 获取IV
+     * @return
+     */
+    private String getCustomIv(){
+        if(extendParams==null){
+            return defaultIv;
+        }
+        String _iv=extendParams.get(ExtendParamConstant.KeyName.IV);
+        if(_iv==null||_iv.length()<=0){
+            return defaultIv;
+        }
+        return _iv;
+    }
     @Override
     public String encode(String key, String content) throws Exception {
         switch (returnType) {
@@ -76,47 +130,36 @@ public class AesCipher implements UCipher {
 
     @Override
     public byte[] encode(String key, byte[] content) throws Exception {
-        //1.构造密钥生成器，指定为AES算法,不区分大小写
-        KeyGenerator keygen = KeyGenerator.getInstance("AES");
-        //2.根据ecnodeRules规则初始化密钥生成器
-        SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-        random.setSeed(key.getBytes());
-        //生成一个128位的随机源,根据传入的字节数组
-        keygen.init(128, random);
-        //3.产生原始对称密钥
-        SecretKey original_key = keygen.generateKey();
-        //4.获得原始对称密钥的字节数组
-        byte[] raw = original_key.getEncoded();
-        //5.根据字节数组生成AES密钥
+        String _iv=getCustomIv();
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(_iv.getBytes());
+        byte[] raw = key.getBytes("UTF-8");
         SecretKey _key = new SecretKeySpec(raw, "AES");
-        //6.根据指定算法AES自成密码器
-        Cipher cipher = Cipher.getInstance("AES");
-        //7.初始化密码器，第一个参数为加密(Encrypt_mode)或者解密解密(Decrypt_mode)操作，第二个参数为使用的KEY
-        cipher.init(Cipher.ENCRYPT_MODE, _key);
-        //8.根据密码器的初始化方式--加密：将数据加密
+        String _mode=getCustomMode();
+        String alt="AES/"+_mode+"/"+getCustomPadding();
+        Cipher cipher = Cipher.getInstance(alt);
+        if(_mode.equals(defaultMode)){
+            cipher.init(Cipher.ENCRYPT_MODE, _key);
+        }else {
+            cipher.init(Cipher.ENCRYPT_MODE, _key,ivParameterSpec);
+        }
         byte[] byte_AES = cipher.doFinal(content);
         return byte_AES;
     }
 
     @Override
     public byte[] decode(String key, byte[] content) throws Exception {
-        //1.构造密钥生成器，指定为AES算法,不区分大小写
-        KeyGenerator keygen = KeyGenerator.getInstance("AES");
-        //2.根据ecnodeRules规则初始化密钥生成器
-        SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-        random.setSeed(key.getBytes());
-        //生成一个128位的随机源,根据传入的字节数组
-        keygen.init(128, random);
-        //3.产生原始对称密钥
-        SecretKey original_key = keygen.generateKey();
-        //4.获得原始对称密钥的字节数组
-        byte[] raw = original_key.getEncoded();
-        //5.根据字节数组生成AES密钥
+        String _iv=getCustomIv();
+        IvParameterSpec ivParameterSpec = new IvParameterSpec(_iv.getBytes());
+        byte[] raw = key.getBytes("UTF-8");
         SecretKey _key = new SecretKeySpec(raw, "AES");
-        //6.根据指定算法AES自成密码器
-        Cipher cipher = Cipher.getInstance("AES");
-        //7.初始化密码器，第一个参数为加密(Encrypt_mode)或者解密(Decrypt_mode)操作，第二个参数为使用的KEY
-        cipher.init(Cipher.DECRYPT_MODE, _key);
+        String _mode=getCustomMode();
+        String alt="AES/"+_mode+"/"+getCustomPadding();
+        Cipher cipher = Cipher.getInstance(alt);
+        if(_mode.equals(defaultMode)){
+            cipher.init(Cipher.DECRYPT_MODE, _key);
+        }else {
+            cipher.init(Cipher.DECRYPT_MODE, _key,ivParameterSpec);
+        }
         byte[] byte_decode = cipher.doFinal(content);
         return byte_decode;
     }

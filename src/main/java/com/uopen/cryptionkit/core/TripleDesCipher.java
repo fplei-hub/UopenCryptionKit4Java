@@ -12,6 +12,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 
 /**
  * 3des加解密
@@ -28,6 +29,11 @@ public class TripleDesCipher implements UCipher {
     @Override
     public void setReturnDataType(ReturnType mReturnType) {
         this.returnType = mReturnType;
+    }
+
+    @Override
+    public void setExtendParams(HashMap<String, String> extendParams) {
+
     }
 
     @Override

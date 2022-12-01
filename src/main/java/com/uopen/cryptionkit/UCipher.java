@@ -1,5 +1,7 @@
 package com.uopen.cryptionkit;
 
+import java.util.HashMap;
+
 /**
  * 加密器
  */
@@ -10,6 +12,11 @@ public interface UCipher {
 
     void setReturnDataType(ReturnType returnType);
 
+    /**
+     * 设置额外参数，参数Key见
+     * @param extendParams
+     */
+    void setExtendParams(HashMap<String,String> extendParams);
     /**
      * 加密
      *

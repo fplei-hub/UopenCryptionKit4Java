@@ -1,12 +1,19 @@
 package com.uopen.cryptionkit;
 
 
+import com.uopen.cryptionkit.utils.RsaKeyHelper;
+
 public class TestEncryptionManager {
     //for test
     public static void main(String[] args) {
-        String value = UEncryptionManager.getInstance().withAes("10---323_哈哈四大时刻18211！@", Op.Encryption, ReturnType.TYPE_HEX);
+
+        RsaKeyHelper.KeyPass keyPass= RsaKeyHelper.generateKeyPair();
+        System.out.println("公钥："+keyPass.getPublicKey());
+        System.out.println("私钥："+keyPass.getPrivateKey());
+
+        String value = UEncryptionManager.getInstance().withAesPck7("123456", Op.Encryption, ReturnType.TYPE_BASE64);
         System.out.println("AES加密后值：" + value);
-        String value1 = UEncryptionManager.getInstance().withAes(value, Op.Decrypt, ReturnType.TYPE_HEX);
+        String value1 = UEncryptionManager.getInstance().withAesPck7(value, Op.Decrypt, ReturnType.TYPE_BASE64);
         System.out.println("AES解密后值：" + value1);
         String sign256Base64 = UEncryptionManager.getInstance().withHmacSh256("测试字符串asa@!_a", ReturnType.TYPE_HEX);
         System.out.println("HmacSh256 指纹：" + sign256Base64);

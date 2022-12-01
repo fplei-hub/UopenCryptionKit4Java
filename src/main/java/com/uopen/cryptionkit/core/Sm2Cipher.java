@@ -18,6 +18,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
+import java.util.HashMap;
 
 /**
  * SM2国秘非对称，类似RSA，比其效率高，更安全
@@ -73,6 +74,11 @@ public class Sm2Cipher implements UCipher {
 
     public ReturnType getReturnType() {
         return returnType;
+    }
+
+    @Override
+    public void setExtendParams(HashMap<String, String> extendParams) {
+
     }
 
     /**

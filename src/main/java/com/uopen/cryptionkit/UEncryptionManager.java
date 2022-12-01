@@ -15,6 +15,10 @@ import com.uopen.cryptionkit.core.TripleDesCipher;
 import com.uopen.cryptionkit.key.KeyCreator;
 import com.uopen.cryptionkit.key.KeyCreatorDefault;
 import com.uopen.cryptionkit.utils.StringUtils;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import java.security.Security;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,6 +38,7 @@ public class UEncryptionManager {
         private UEncryptionManager encryptionManager;
 
         EncryptionHelper() {
+            Security.addProvider(new BouncyCastleProvider());
             encryptionManager = new UEncryptionManager();
         }
 
@@ -100,7 +105,7 @@ public class UEncryptionManager {
         if (StringUtils.isNull(keyCreator.getDesPass())) {
             throw new RuntimeException("Warning：we not found 'AesPass' in KeyCreator");
         }
-        return optEncrypt(DesCipher.class, keyCreator.getDesPass(), content, type, returnDataType);
+        return optEncrypt(DesCipher.class, keyCreator.getDesPass(), content, type, returnDataType,null);
     }
     /**
      * Aes加解密
@@ -115,7 +120,56 @@ public class UEncryptionManager {
         if (StringUtils.isNull(keyCreator.getAesPass())) {
            throw new RuntimeException("Warning：we not found 'AesPass' in KeyCreator");
         }
-        return optEncrypt(AesCipher.class, keyCreator.getAesPass(), content, type, returnDataType);
+        return optEncrypt(AesCipher.class, keyCreator.getAesPass(), content, type, returnDataType,null);
+    }
+
+    /**
+     *  Aes加解密 Pck5
+     * @param content
+     * @param type
+     * @param returnDataType
+     * @return
+     */
+    public String withAesPck5(String content, Op type, ReturnType returnDataType) {
+        checkKey();
+        if (StringUtils.isNull(keyCreator.getAesPass())) {
+            throw new RuntimeException("Warning：we not found 'AesPass' in KeyCreator");
+        }
+        HashMap<String,String> extendParam=new HashMap<>();
+        extendParam.put(ExtendParamConstant.KeyName.MODE,ExtendParamConstant.KeyValue.MODE_ECB);
+        extendParam.put(ExtendParamConstant.KeyName.PADDING,ExtendParamConstant.KeyValue.PADDING_PKCS5);
+        return optEncrypt(AesCipher.class, keyCreator.getAesPass(), content, type, returnDataType,extendParam);
+    }
+    /**
+     *  Aes加解密 Pck7
+     * @param content
+     * @param type
+     * @param returnDataType
+     * @return
+     */
+    public String withAesPck7(String content, Op type, ReturnType returnDataType) {
+        checkKey();
+        if (StringUtils.isNull(keyCreator.getAesPass())) {
+            throw new RuntimeException("Warning：we not found 'AesPass' in KeyCreator");
+        }
+        HashMap<String,String> extendParam=new HashMap<>();
+        extendParam.put(ExtendParamConstant.KeyName.PADDING,ExtendParamConstant.KeyValue.PADDING_PKCS7);
+        return optEncrypt(AesCipher.class, keyCreator.getAesPass(), content, type, returnDataType,extendParam);
+    }
+    /**
+     * Aes加解密
+     * @param content
+     * @param type
+     * @param returnDataType
+     * @param extendParam
+     * @return
+     */
+    public String withAes(String content, Op type, ReturnType returnDataType, HashMap<String,String> extendParam) {
+        checkKey();
+        if (StringUtils.isNull(keyCreator.getAesPass())) {
+            throw new RuntimeException("Warning：we not found 'AesPass' in KeyCreator");
+        }
+        return optEncrypt(AesCipher.class, keyCreator.getAesPass(), content, type, returnDataType,extendParam);
     }
 
     /**
@@ -131,7 +185,7 @@ public class UEncryptionManager {
         if (StringUtils.isNull(keyCreator.getTriplePass())) {
             throw new RuntimeException("Warning：we not found 'TriplePass' in KeyCreator");
         }
-        return optEncrypt(TripleDesCipher.class, keyCreator.getTriplePass(), content, type, returnDataType);
+        return optEncrypt(TripleDesCipher.class, keyCreator.getTriplePass(), content, type, returnDataType,null);
     }
 
     /**
@@ -157,7 +211,7 @@ public class UEncryptionManager {
         if (StringUtils.isNull(keyCreator.getHmacShaPass())) {
             throw new RuntimeException("Warning：we not found 'HmacShaPass' in KeyCreator");
         }
-        return optEncrypt(HmacSHA1Cipher.class, keyCreator.getHmacShaPass(), content, Op.Encryption, returnDataType);
+        return optEncrypt(HmacSHA1Cipher.class, keyCreator.getHmacShaPass(), content, Op.Encryption, returnDataType,null);
     }
 
     /**
@@ -172,7 +226,7 @@ public class UEncryptionManager {
         if (StringUtils.isNull(keyCreator.getHmacShaPass())) {
             throw new RuntimeException("Warning：we not found 'HmacShaPass' in KeyCreator");
         }
-        return optEncrypt(HmacSHA256Cipher.class, keyCreator.getHmacShaPass(), content, Op.Encryption, returnDataType);
+        return optEncrypt(HmacSHA256Cipher.class, keyCreator.getHmacShaPass(), content, Op.Encryption, returnDataType,null);
     }
 
     /**
@@ -188,7 +242,7 @@ public class UEncryptionManager {
         if (StringUtils.isNull(keyCreator.getRsaPrivatePass())) {
             throw new RuntimeException("Warning：we not found 'RsaPrivatePass' in KeyCreator");
         }
-        return optEncrypt(RsaPrivateCipher.class, keyCreator.getRsaPrivatePass(), content, operator, returnDataType);
+        return optEncrypt(RsaPrivateCipher.class, keyCreator.getRsaPrivatePass(), content, operator, returnDataType,null);
     }
 
     /**
@@ -204,7 +258,7 @@ public class UEncryptionManager {
         if (StringUtils.isNull(keyCreator.getRsaPublicPass())) {
             throw new RuntimeException("Warning：we not found 'RsaPublicPass' in KeyCreator");
         }
-        return optEncrypt(RsaPublicCipher.class, keyCreator.getRsaPublicPass(), content, operator, returnDataType);
+        return optEncrypt(RsaPublicCipher.class, keyCreator.getRsaPublicPass(), content, operator, returnDataType,null);
     }
 
     /**
@@ -229,7 +283,7 @@ public class UEncryptionManager {
         if (StringUtils.isNull(keyCreator.getSm2PrivatePass())) {
             throw new RuntimeException("Warning：we not found 'Sm2PrivatePass' in KeyCreator");
         }
-        return optEncrypt(Sm2Cipher.class, keyCreator.getSm2PrivatePass(), content, operator, returnDataType);
+        return optEncrypt(Sm2Cipher.class, keyCreator.getSm2PrivatePass(), content, operator, returnDataType,null);
     }
     /**
      * 国秘SM2非对称加解密（公钥操作）
@@ -243,7 +297,7 @@ public class UEncryptionManager {
         if (StringUtils.isNull(keyCreator.getSm2PublicPass())) {
             throw new RuntimeException("Warning：we not found 'Sm2PrivatePass' in KeyCreator");
         }
-        return optEncrypt(Sm2Cipher.class, keyCreator.getSm2PublicPass(), content, operator, returnDataType);
+        return optEncrypt(Sm2Cipher.class, keyCreator.getSm2PublicPass(), content, operator, returnDataType,null);
     }
 
     /**
@@ -258,7 +312,7 @@ public class UEncryptionManager {
         if (StringUtils.isNull(keyCreator.getSm4Pass())) {
             throw new RuntimeException("Warning：we not found 'Sm4Pass' in KeyCreator");
         }
-        return optEncrypt(Sm4Cipher.class, keyCreator.getSm4Pass(), content, operator, returnDataType);
+        return optEncrypt(Sm4Cipher.class, keyCreator.getSm4Pass(), content, operator, returnDataType,null);
     }
 
     /**
@@ -290,11 +344,12 @@ public class UEncryptionManager {
         return verify(DsaSignature.class,keyCreator.getDasPublicKey(),sign,data,returnType);
     }
 
-    public String optEncrypt(Class clazz, String key, String content, Op type, ReturnType returnDataType) {
+    public String optEncrypt(Class clazz, String key, String content, Op type, ReturnType returnDataType,HashMap<String,String> extendParam) {
         String tempStr = null;
         try {
             cipher = getCipher(clazz);
             cipher.setReturnDataType(returnDataType);
+            cipher.setExtendParams(extendParam);
             switch (type) {
                 case Decrypt:
                     tempStr = cipher.decode(key, content);

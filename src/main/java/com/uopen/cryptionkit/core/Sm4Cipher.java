@@ -7,6 +7,7 @@ import org.bouncycastle.util.encoders.Base64;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 
 /**
  * SM4国秘对称算法，类似3DES，128位秘钥
@@ -20,6 +21,11 @@ public class Sm4Cipher implements UCipher {
     @Override
     public void setReturnDataType(ReturnType returnType) {
         this.returnType=returnType;
+    }
+
+    @Override
+    public void setExtendParams(HashMap<String, String> extendParams) {
+
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.bouncycastle.util.encoders.Base64;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 
 /**
  * HmacSHA256签名加密(只能加签，不能逆向解密)
@@ -24,6 +25,11 @@ public class HmacSHA256Cipher implements UCipher {
     @Override
     public void setReturnDataType(ReturnType mReturnType) {
         this.returnType = mReturnType;
+    }
+
+    @Override
+    public void setExtendParams(HashMap<String, String> extendParams) {
+
     }
 
     @Override

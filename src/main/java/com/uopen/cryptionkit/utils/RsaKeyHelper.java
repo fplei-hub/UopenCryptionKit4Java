@@ -3,8 +3,11 @@ package com.uopen.cryptionkit.utils;
  * Created by fplei on 2018/9/25.
  */
 
+import org.bouncycastle.util.encoders.Base64;
+
 import java.io.File;
 import java.io.FileWriter;
+import java.nio.charset.Charset;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -14,6 +17,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.UUID;
 
 /**
  * RSA秘钥对生成辅助
@@ -30,7 +34,7 @@ public class RsaKeyHelper {
     private static KeyPair keyPair = null;
     private static final String ALGORITHM =  "RSA";
     /** 默认密钥大小 */
-    private static final int KEY_SIZE = 1024;
+    private static final int KEY_SIZE = 2048;
     /** 初始化密钥工厂 */
     static{
         try {
@@ -84,40 +88,39 @@ public class RsaKeyHelper {
      */
     public static synchronized KeyPass generateKeyPair(){
         try {
-            keyPairGenerator.initialize(KEY_SIZE,new SecureRandom(UUIDUtils.getUUID().getBytes()));
+            keyPairGenerator.initialize(KEY_SIZE, new SecureRandom(UUID.randomUUID().toString().getBytes()));
             keyPair = keyPairGenerator.generateKeyPair();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        RSAPublicKey rsaPublicKey = (RSAPublicKey)keyPair.getPublic();
-        RSAPrivateKey rsaPrivateKey = (RSAPrivateKey)keyPair.getPrivate();
-        //生成的密钥对编码成base64
-        String publicKeyString = UUtils.byteToHex(rsaPublicKey.getEncoded());
-        String privateKeyString = UUtils.byteToHex(rsaPrivateKey.getEncoded());
+        RSAPublicKey rsaPublicKey = (RSAPublicKey) keyPair.getPublic();
+        RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) keyPair.getPrivate();
+        String publicKeyString = new String(Base64.encode(rsaPublicKey.getEncoded()), Charset.forName("UTF-8"));
+        String privateKeyString = new String(Base64.encode(rsaPrivateKey.getEncoded()), Charset.forName("UTF-8"));
         KeyPass keyPass=new KeyPass();
-        keyPass.setPublicKeyHex(publicKeyString);
-        keyPass.setPrivateKeyHex(privateKeyString);
+        keyPass.setPublicKey(publicKeyString);
+        keyPass.setPrivateKey(privateKeyString);
         return keyPass;
     }
 
     public static class KeyPass{
-        private String publicKeyHex;
-        private  String privateKeyHex;
+        private String publicKey;
+        private  String privateKey;
 
-        public String getPublicKeyHex() {
-            return publicKeyHex;
+        public String getPublicKey() {
+            return publicKey;
         }
 
-        public void setPublicKeyHex(String publicKeyHex) {
-            this.publicKeyHex = publicKeyHex;
+        public void setPublicKey(String publicKeyHex) {
+            this.publicKey = publicKeyHex;
         }
 
-        public String getPrivateKeyHex() {
-            return privateKeyHex;
+        public String getPrivateKey() {
+            return privateKey;
         }
 
-        public void setPrivateKeyHex(String privateKeyHex) {
-            this.privateKeyHex = privateKeyHex;
+        public void setPrivateKey(String privateKeyHex) {
+            this.privateKey = privateKeyHex;
         }
 
         /**
@@ -127,7 +130,7 @@ public class RsaKeyHelper {
          */
         public void saveToFile(String privateKeyFilePath,String publicKeyFilePath)throws Exception{
             if(StringUtils.isNull(privateKeyFilePath)||StringUtils.isNull(publicKeyFilePath)
-                    ||publicKeyHex==null||privateKeyHex==null){
+                    ||publicKey==null||privateKey==null){
                 throw new Exception("error:saveToFile function args invalid ?");
             }
             File privateKeyFile=new File(privateKeyFilePath);
@@ -139,12 +142,12 @@ public class RsaKeyHelper {
                 e.printStackTrace();
             }
             FileWriter fileWriterPrivate=new FileWriter(privateKeyFile);
-            fileWriterPrivate.write(privateKeyHex);
+            fileWriterPrivate.write(privateKey);
             fileWriterPrivate.flush();
             fileWriterPrivate.close();
 
             FileWriter fileWriterPublic=new FileWriter(publicKeyFile);
-            fileWriterPublic.write(publicKeyHex);
+            fileWriterPublic.write(publicKey);
             fileWriterPublic.flush();
             fileWriterPublic.close();
         }

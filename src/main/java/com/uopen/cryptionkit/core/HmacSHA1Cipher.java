@@ -10,6 +10,7 @@ import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 
 /**
  * SHA1签名加密(只能加签，不能逆向解密)
@@ -25,6 +26,11 @@ public class HmacSHA1Cipher implements UCipher {
     @Override
     public void setReturnDataType(ReturnType mReturnType) {
         this.returnType = mReturnType;
+    }
+
+    @Override
+    public void setExtendParams(HashMap<String, String> extendParams) {
+
     }
 
     @Override

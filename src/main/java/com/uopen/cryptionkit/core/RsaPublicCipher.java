@@ -11,6 +11,7 @@ import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
 import java.security.interfaces.RSAPublicKey;
+import java.util.HashMap;
 
 
 /**
@@ -29,6 +30,11 @@ public class RsaPublicCipher implements UCipher {
     @Override
     public void setReturnDataType(ReturnType mReturnType) {
         this.returnType = mReturnType;
+    }
+
+    @Override
+    public void setExtendParams(HashMap<String, String> extendParams) {
+        
     }
 
     @Override

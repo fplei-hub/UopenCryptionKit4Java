@@ -16,10 +16,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 
 
 /**
@@ -39,6 +36,11 @@ public class RsaPrivateCipher implements UCipher {
     @Override
     public void setReturnDataType(ReturnType mReturnType) {
         this.returnType = mReturnType;
+    }
+
+    @Override
+    public void setExtendParams(HashMap<String, String> extendParams) {
+
     }
 
     @Override

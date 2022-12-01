@@ -7,6 +7,7 @@ import org.bouncycastle.util.encoders.Base64;
 import java.nio.charset.Charset;
 import java.security.Key;
 import java.security.spec.AlgorithmParameterSpec;
+import java.util.HashMap;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
@@ -26,6 +27,11 @@ public class DesCipher implements UCipher {
     @Override
     public void setReturnDataType(ReturnType returnType) {
         this.returnType = returnType;
+    }
+
+    @Override
+    public void setExtendParams(HashMap<String, String> extendParams) {
+
     }
 
     @Override

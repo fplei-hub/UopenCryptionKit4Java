@@ -3,12 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    <name>UopenCryptionKit4Java</name>
     <groupId>io.github.fpleihub</groupId>
     <artifactId>UopenCryptionKit4Java</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
     <url>https://github.com/fpleihub/UopenCryptionKit4Java.git</url>
+    <description>Create a unified encryption and decryption class library for use, provide operation interfaces as much as possible, and separate the secret key and encryption call process, so that developers pay more attention to business operations。
+    </description>
     <properties>
         <java.version>1.8</java.version>
     </properties>

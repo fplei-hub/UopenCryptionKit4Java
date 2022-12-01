@@ -11,7 +11,7 @@ public class KeyCreatorDefault extends KeyCreator {
 
     @Override
     public String getAesPass() {
-        return "my2020aes!@#_121872";
+        return "020aes!@#_121872020aes!@#_121872";
     }
 
     @Override
