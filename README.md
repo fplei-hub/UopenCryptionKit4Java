@@ -25,8 +25,21 @@ com.uopen.cryptionkit <br/>
 |---ReturnType.java 加解密操作数据类型<br/>
 |---UEncryptionManager.java 加解密操作入口
 
-####使用说明<br/>
-Step1.具体业务项目通过继承KeyCreator实现为项目 UopenCryptionKit 提供操作秘钥，需要使用到哪些加密器则对应的需要提供对应秘钥，如:<br/>
+####使用说明<br/>  
+Step1.Maven or Gradle引用  
+Maven：
+~~~C 
+<dependency>
+  <groupId>io.github.fpleihub</groupId>
+  <artifactId>UopenCryptionKit4Java</artifactId>
+  <version>1.0</version>
+</dependency>
+~~~
+Gradle：
+~~~C 
+implementation 'io.github.fpleihub:UopenCryptionKit4Java:1.0'
+~~~
+Step2.具体业务项目通过继承KeyCreator实现为项目 UopenCryptionKit 提供操作秘钥，需要使用到哪些加密器则对应的需要提供对应秘钥，如:<br/>
 ~~~C 
 public class MyEncryptKeySource extends KeyCreator {
     @Override
@@ -86,12 +99,12 @@ public class MyEncryptKeySource extends KeyCreator {
 3）国秘SM2秘钥对可通过/utils/SM2KeyHelper.java}生成，内置默认使用十六进制字符串作为铭文秘钥，如果需要更换成其他的数据类型(ReturnType中类型列表)，并且调整{Sm2Cipher.java}加密器的秘钥编码方式。<br/>
 4）国秘SM4秘钥长度为16个字符.  
 
-Step2.将密码管理器初始化到UopenCryptionKit4中(可以使用时初始化，也可以项目启动是初始化)  
+Step3.将密码管理器初始化到UopenCryptionKit4中(可以使用时初始化，也可以项目启动是初始化)  
 ~~~C
 UEncryptionManager.initKey(new MyEncryptKeySource());
 ~~~
 
-Step3.使用UEncryptionManager进行加解密操作  
+Step4.使用UEncryptionManager进行加解密操作  
 Op操作符 
 ~~~C 
 //加密操作符
